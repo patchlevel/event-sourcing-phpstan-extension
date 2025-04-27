@@ -3,3 +3,8 @@ services:
 		class: Patchlevel\EventSourcingPHPStanExtension\AggregateRootExtension
 		tags:
 			- phpstan.properties.readWriteExtension
+
+	-
+		class: Patchlevel\EventSourcingPHPStanExtension\DontRecordWhenApplyingExtension
+		tags:
+			- phpstan.restrictedMethodUsageExtension

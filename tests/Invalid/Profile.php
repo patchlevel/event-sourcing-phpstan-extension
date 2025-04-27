@@ -1,11 +1,12 @@
 <?php
 
-namespace Patchlevel\EventSourcingPHPStanExtension\Tests\Valid;
+namespace Patchlevel\EventSourcingPHPStanExtension\Tests\Invalid;
 
 use Patchlevel\EventSourcing\Aggregate\BasicAggregateRoot;
 use Patchlevel\EventSourcing\Aggregate\Uuid;
 use Patchlevel\EventSourcing\Attribute\Apply;
 use Patchlevel\EventSourcing\Attribute\Id;
+use Patchlevel\EventSourcingPHPStanExtension\Tests\Valid\ProfileCreated;
 
 class Profile extends BasicAggregateRoot
 {
@@ -26,6 +27,13 @@ class Profile extends BasicAggregateRoot
     {
         $this->id = $event->id;
         $this->name = $event->name;
+        $this->recordThat(new ProfileCreated($event->id, $event->name));
+        $this->hiddenRecordThat($event);
+    }
+
+    public function hiddenRecordThat(ProfileCreated $event): void
+    {
+        $this->recordThat(new ProfileCreated($event->id, $event->name));
     }
 
     public function id(): Uuid
