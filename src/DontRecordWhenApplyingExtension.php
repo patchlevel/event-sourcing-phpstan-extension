@@ -11,12 +11,14 @@ use PHPStan\Reflection\ExtendedMethodReflection;
 use PHPStan\Rules\RestrictedUsage\RestrictedMethodUsageExtension;
 use PHPStan\Rules\RestrictedUsage\RestrictedUsage;
 
+use function sprintf;
+
 final class DontRecordWhenApplyingExtension implements RestrictedMethodUsageExtension
 {
     public function isRestrictedMethodUsage(
         ExtendedMethodReflection $methodReflection,
-        Scope $scope
-    ): ?RestrictedUsage {
+        Scope $scope,
+    ): RestrictedUsage|null {
         if ($methodReflection->getName() !== 'recordThat' && !$methodReflection->getDeclaringClass()->implementsInterface(AggregateRoot::class)) {
             return null;
         }
