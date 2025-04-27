@@ -4,26 +4,25 @@ help:                                                                           
 vendor: composer.lock
 	composer install
 
-.PHONY: phpcs-check
-phpcs-check: vendor                                                             ## run phpcs
+vendor-tools: tools/composer.lock
+	cd tools && composer install
+
+.PHONY: cs-check
+cs-check: vendor                                                                ## run phpcs
 	vendor/bin/phpcs
 
-.PHONY: phpcs-fix
-phpcs-fix: vendor                                                               ## run phpcs fixer
-	vendor/bin/phpcbf
+.PHONY: cs
+cs: vendor                                                                      ## run phpcs fixer
+	vendor/bin/phpcbf || true
+	vendor/bin/phpcs
 
 .PHONY: phpstan
 phpstan: vendor                                                                 ## run phpstan static code analyser
-	vendor/bin/phpstan analyse
+	php vendor/bin/phpstan
 
-.PHONY: phpunit
-phpunit: vendor                                                                 ## run phpunit tests
-	vendor/bin/phpunit --testdox --colors=always -v $(OPTIONS)
+.PHONY: phpstan-baseline
+phpstan-baseline: vendor                                                        ## run phpstan static code analyser
+	php vendor/bin/phpstan --generate-baseline
 
 .PHONY: static
-static: phpstan phpcs-check                                               ## run static analyser
-
-test: phpunit                                                                   ## run tests
-
-.PHONY: dev
-dev: static test                                                                ## run dev tools
+static: phpstan cs                                              			 	## run static analyser

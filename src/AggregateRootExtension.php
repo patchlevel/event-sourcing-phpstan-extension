@@ -11,7 +11,6 @@ use PHPStan\Rules\Properties\ReadWritePropertiesExtension;
 
 final class AggregateRootExtension implements ReadWritePropertiesExtension
 {
-
     public function isAlwaysRead(PropertyReflection $property, string $propertyName): bool
     {
         return false;
@@ -32,8 +31,6 @@ final class AggregateRootExtension implements ReadWritePropertiesExtension
             }
         }
 
-
         return false;
     }
-
 }

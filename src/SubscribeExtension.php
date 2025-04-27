@@ -15,6 +15,9 @@ use PHPStan\Analyser\TypeSpecifierContext;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Type\ExpressionTypeResolverExtension;
 use PHPStan\Type\ObjectType;
+use PHPStan\Type\Type;
+
+use function assert;
 
 final class SubscribeExtension implements ExpressionTypeResolverExtension, TypeSpecifierAwareExtension
 {
@@ -28,7 +31,7 @@ final class SubscribeExtension implements ExpressionTypeResolverExtension, TypeS
     public function isMethodSupported(
         MethodReflection $methodReflection,
         MethodCall $node,
-        TypeSpecifierContext $context
+        TypeSpecifierContext $context,
     ): bool {
         $attributes = $methodReflection->getDeclaringClass()->getNativeReflection()->getMethod($methodReflection->getName())->getAttributes();
 
@@ -47,7 +50,7 @@ final class SubscribeExtension implements ExpressionTypeResolverExtension, TypeS
         MethodReflection $methodReflection,
         MethodCall $node,
         Scope $scope,
-        TypeSpecifierContext $context
+        TypeSpecifierContext $context,
     ): SpecifiedTypes {
         $attributes = $methodReflection->getDeclaringClass()->getNativeReflection()->getMethod($methodReflection->getName())->getAttributes();
         $class = '';
@@ -57,18 +60,16 @@ final class SubscribeExtension implements ExpressionTypeResolverExtension, TypeS
                 continue;
             }
 
-            /** @var Subscribe $subscribeAttribute */
             $subscribeAttribute = $attribute->newInstance();
+            assert($subscribeAttribute instanceof Subscribe);
             $class = $subscribeAttribute->eventClass;
         }
-
 
         $expr = $node->getArgs()[0]->value;
 
         // Assuming extension implements \PHPStan\Analyser\TypeSpecifierAwareExtension
 
         return $this->typeSpecifier->create($expr, new ObjectType($class), TypeSpecifierContext::createTruthy());
-
     }
 
     public function setTypeSpecifier(TypeSpecifier $typeSpecifier): void
@@ -78,7 +79,6 @@ final class SubscribeExtension implements ExpressionTypeResolverExtension, TypeS
 
     private function isSupported(Expr $expr, Scope $scope): bool
     {
-
         if (!$expr instanceof MethodCall) {
             return false;
         }
@@ -98,16 +98,11 @@ final class SubscribeExtension implements ExpressionTypeResolverExtension, TypeS
         return false;
     }
 
-    public function getType(Expr $expr, Scope $scope): ?\PHPStan\Type\Type
+    public function getType(Expr $expr, Scope $scope): Type|null
     {
         if (!$this->isSupported($expr, $scope)) {
             return null;
         }
-
-        /** @var MethodCall $expr */
-        dump($expr);
-
-        $expr->
 
         $attributes = $scope->getClassReflection()->getNativeReflection()->getMethod($expr->name->name)->getAttributes();
 
@@ -116,8 +111,9 @@ final class SubscribeExtension implements ExpressionTypeResolverExtension, TypeS
                 continue;
             }
 
-            /** @var Subscribe $subscribeAttribute */
             $subscribeAttribute = $attribute->newInstance();
+            assert($subscribeAttribute instanceof Subscribe);
+
             return new ObjectType($subscribeAttribute->eventClass);
         }
 
