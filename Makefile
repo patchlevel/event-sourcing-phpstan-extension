@@ -18,7 +18,7 @@ cs: vendor                                                                      
 
 .PHONY: phpstan
 phpstan: vendor                                                                 ## run phpstan static code analyser
-	php vendor/bin/phpstan
+	php vendor/bin/phpstan --debug
 
 .PHONY: phpstan-baseline
 phpstan-baseline: vendor                                                        ## run phpstan static code analyser

@@ -1,6 +1,6 @@
 # https://help.github.com/en/categories/automating-your-workflow-with-github-actions
 
-name: "Static Analysis by Psalm"
+name: "Static Analysis by PHPStan"
 
 on:
     pull_request:
@@ -10,8 +10,8 @@ on:
             - "renovate/*"
 
 jobs:
-    static-analysis-psalm:
-        name: "Static Analysis by Psalm"
+    static-analysis-phpstan:
+        name: "Static Analysis by PHPStan"
 
         runs-on: ${{ matrix.operating-system }}
 
@@ -20,25 +20,25 @@ jobs:
                 dependencies:
                     - "locked"
                 php-version:
-                    - "8.3"
+                    - "8.4"
                 operating-system:
                     - "ubuntu-latest"
 
         steps:
             - name: "Checkout"
-              uses: actions/checkout@v5
+              uses: actions/checkout@v4
 
             - name: "Install PHP"
-              uses: "shivammathur/setup-php@2.35.0"
+              uses: "shivammathur/setup-php@2.34.1"
               with:
-                  coverage: "pcov"
+                  coverage: none
                   php-version: "${{ matrix.php-version }}"
-                  ini-values: memory_limit=-1
+                  ini-values: memory_limit=-1, opcache.enable_cli=1
                   extensions: pdo_sqlite
 
-            - uses: ramsey/composer-install@3.1.0
+            - uses: ramsey/composer-install@3.1.1
               with:
                 dependency-versions: ${{ matrix.dependencies }}
 
-            - name: "psalm"
-              run: "vendor/bin/psalm --shepherd --stats"
+            - name: "PHPStan"
+              run: "vendor/bin/phpstan analyse"
