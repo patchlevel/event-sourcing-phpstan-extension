@@ -8,3 +8,13 @@ services:
 		class: Patchlevel\EventSourcingPHPStanExtension\DontRecordWhenApplyingExtension
 		tags:
 			- phpstan.restrictedMethodUsageExtension
+
+	-
+		class: Patchlevel\EventSourcingPHPStanExtension\DecisionModelBuilderExtension
+		tags:
+			- phpstan.broker.dynamicMethodReturnTypeExtension
+
+	-
+		class: Patchlevel\EventSourcingPHPStanExtension\ProjectionBuilderExtension
+		tags:
+			- phpstan.broker.dynamicMethodReturnTypeExtension
