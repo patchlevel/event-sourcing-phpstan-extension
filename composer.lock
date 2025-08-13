@@ -631,12 +631,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/patchlevel/event-sourcing.git",
-                "reference": "3f6c8b6a894e039baa7230c08d53c69a219590a7"
+                "reference": "ac840f9acc4a179ef64cc60860f9dcf64d45192c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/patchlevel/event-sourcing/zipball/3f6c8b6a894e039baa7230c08d53c69a219590a7",
-                "reference": "3f6c8b6a894e039baa7230c08d53c69a219590a7",
+                "url": "https://api.github.com/repos/patchlevel/event-sourcing/zipball/ac840f9acc4a179ef64cc60860f9dcf64d45192c",
+                "reference": "ac840f9acc4a179ef64cc60860f9dcf64d45192c",
                 "shasum": ""
             },
             "require": {
@@ -707,7 +707,7 @@
                 "issues": "https://github.com/patchlevel/event-sourcing/issues",
                 "source": "https://github.com/patchlevel/event-sourcing/tree/DCB"
             },
-            "time": "2025-08-12T11:48:31+00:00"
+            "time": "2025-08-13T07:56:42+00:00"
         },
         {
             "name": "patchlevel/hydrator",

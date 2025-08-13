@@ -12,9 +12,9 @@ services:
 	-
 		class: Patchlevel\EventSourcingPHPStanExtension\DecisionModelBuilderExtension
 		tags:
-			- phpstan.broker.dynamicMethodReturnTyp
+			- phpstan.broker.dynamicMethodReturnTypeExtension
 
 	-
 		class: Patchlevel\EventSourcingPHPStanExtension\ProjectionBuilderExtension
 		tags:
-			- phpstan.broker.dynamicMethodReturnTyp
+			- phpstan.broker.dynamicMethodReturnTypeExtension
