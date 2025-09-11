@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Patchlevel\EventSourcingPHPStanExtension\Tests\Valid;
 
 use Patchlevel\EventSourcing\Attribute\Handle;
-use Patchlevel\EventSourcing\DCB\DecisionModelBuilder;
-use Patchlevel\EventSourcing\DCB\EventAppender;
+use Patchlevel\EventSourcing\DecisionModel\DecisionModelBuilder;
+use Patchlevel\EventSourcing\DecisionModel\EventAppender;
 
 final class CreateInvoiceHandler
 {

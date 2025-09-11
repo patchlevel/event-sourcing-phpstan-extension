@@ -3,7 +3,7 @@
 namespace Patchlevel\EventSourcingPHPStanExtension\Tests\Invalid;
 
 use Patchlevel\EventSourcing\Aggregate\BasicAggregateRoot;
-use Patchlevel\EventSourcing\Aggregate\Uuid;
+use Patchlevel\EventSourcing\Identifier\Uuid;
 use Patchlevel\EventSourcing\Attribute\Apply;
 use Patchlevel\EventSourcing\Attribute\Id;
 use Patchlevel\EventSourcingPHPStanExtension\Tests\Valid\ProfileCreated;

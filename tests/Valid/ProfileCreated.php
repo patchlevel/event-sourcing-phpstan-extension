@@ -2,13 +2,11 @@
 
 namespace Patchlevel\EventSourcingPHPStanExtension\Tests\Valid;
 
-use Patchlevel\EventSourcing\Aggregate\Uuid;
-use Patchlevel\EventSourcing\Serializer\Normalizer\IdNormalizer;
+use Patchlevel\EventSourcing\Identifier\Uuid;
 
 class ProfileCreated
 {
     public function __construct(
-        #[IdNormalizer(Uuid::class)]
         public readonly Uuid $id,
         public readonly string $name
     ) {

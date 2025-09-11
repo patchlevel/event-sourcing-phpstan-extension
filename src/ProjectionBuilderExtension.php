@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Patchlevel\EventSourcingPHPStanExtension;
 
-use Patchlevel\EventSourcing\DCB\ProjectionBuilder;
+use Patchlevel\EventSourcing\Projection\ProjectionBuilder;
 use PhpParser\Node\Expr\MethodCall;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\MethodReflection;

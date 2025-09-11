@@ -4,16 +4,11 @@ declare(strict_types=1);
 
 namespace Patchlevel\EventSourcingPHPStanExtension\Tests\Valid;
 
-use Patchlevel\EventSourcing\DCB\EventRouter;
-use Patchlevel\EventSourcing\DCB\Projection;
+use Patchlevel\EventSourcing\Projection\BasicProjection;
 
-/**
- * @implements Projection<int>
- */
-final class NextInvoiceNumberProjection implements Projection
+/** @extends  BasicProjection<int> */
+final class NextInvoiceNumberProjection extends BasicProjection
 {
-    use EventRouter;
-
     /** @return list<string> */
     public function tagFilter(): array
     {

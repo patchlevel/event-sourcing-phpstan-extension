@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Patchlevel\EventSourcingPHPStanExtension;
 
-use Patchlevel\EventSourcing\DCB\DecisionModel;
-use Patchlevel\EventSourcing\DCB\DecisionModelBuilder;
+use Patchlevel\EventSourcing\DecisionModel\DecisionModel;
+use Patchlevel\EventSourcing\DecisionModel\DecisionModelBuilder;
 use PhpParser\Node\Expr\MethodCall;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\MethodReflection;
