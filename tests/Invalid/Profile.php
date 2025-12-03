@@ -5,6 +5,7 @@ namespace Patchlevel\EventSourcingPHPStanExtension\Tests\Invalid;
 use Patchlevel\EventSourcing\Aggregate\BasicAggregateRoot;
 use Patchlevel\EventSourcing\Aggregate\Uuid;
 use Patchlevel\EventSourcing\Attribute\Apply;
+use Patchlevel\EventSourcing\Attribute\Handle;
 use Patchlevel\EventSourcing\Attribute\Id;
 use Patchlevel\EventSourcingPHPStanExtension\Tests\Valid\EventCollector;
 use Patchlevel\EventSourcingPHPStanExtension\Tests\Valid\NameChanged;
@@ -18,11 +19,21 @@ class Profile extends BasicAggregateRoot
     private Uuid $id;
     private string $name;
     private EventCollector $collector;
+    private int $count = 0;
 
+    /** @var array<int, string> */
+    private array $items = [];
+
+    /** @var list<self> */
+    private static array $instances = [];
+
+    #[Handle]
     public static function create(Uuid $id, string $name): self
     {
         $self = new self();
         $self->recordThat(new ProfileCreated($id, $name));
+        $self->name = 'asd';
+        $self->changeStateHidden();
 
         return $self;
     }
@@ -59,6 +70,40 @@ class Profile extends BasicAggregateRoot
     public function collectEvent(NameChanged $event): void
     {
         $this->collector->recordThat($event);
+    }
+
+    public function changeStateHidden(): void
+    {
+        $this->name = 'invalid';
+    }
+
+    public function otherWriteForms(): void
+    {
+        $this->name .= '!';
+        $this->count++;
+        --$this->count;
+        $this->items[] = 'appended';
+        $this->items[0] = 'overwritten';
+        [$this->name, $this->count] = ['destructured', 1];
+        unset($this->items[0]);
+        self::$instances = [];
+    }
+
+    public function count(): int
+    {
+        return $this->count;
+    }
+
+    /** @return array<int, string> */
+    public function items(): array
+    {
+        return $this->items;
+    }
+
+    /** @return list<self> */
+    public static function instances(): array
+    {
+        return self::$instances;
     }
 
     public function id(): Uuid

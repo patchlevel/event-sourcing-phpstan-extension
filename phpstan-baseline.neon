@@ -7,6 +7,42 @@ parameters:
 			path: tests/Invalid/PersonalInformation.php
 
 		-
+			rawMessage: 'Aggregate state property "count" should only be written in an #[Apply] method, but is written in "Patchlevel\EventSourcingPHPStanExtension\Tests\Invalid\Profile::otherWriteForms()".'
+			identifier: patchlevel.noStateWriteWhenNotApplying
+			count: 3
+			path: tests/Invalid/Profile.php
+
+		-
+			rawMessage: 'Aggregate state property "instances" should only be written in an #[Apply] method, but is written in "Patchlevel\EventSourcingPHPStanExtension\Tests\Invalid\Profile::otherWriteForms()".'
+			identifier: patchlevel.noStateWriteWhenNotApplying
+			count: 1
+			path: tests/Invalid/Profile.php
+
+		-
+			rawMessage: 'Aggregate state property "items" should only be written in an #[Apply] method, but is written in "Patchlevel\EventSourcingPHPStanExtension\Tests\Invalid\Profile::otherWriteForms()".'
+			identifier: patchlevel.noStateWriteWhenNotApplying
+			count: 3
+			path: tests/Invalid/Profile.php
+
+		-
+			rawMessage: 'Aggregate state property "name" should only be written in an #[Apply] method, but is written in "Patchlevel\EventSourcingPHPStanExtension\Tests\Invalid\Profile::changeStateHidden()".'
+			identifier: patchlevel.noStateWriteWhenNotApplying
+			count: 1
+			path: tests/Invalid/Profile.php
+
+		-
+			rawMessage: 'Aggregate state property "name" should only be written in an #[Apply] method, but is written in "Patchlevel\EventSourcingPHPStanExtension\Tests\Invalid\Profile::create()".'
+			identifier: patchlevel.noStateWriteWhenNotApplying
+			count: 1
+			path: tests/Invalid/Profile.php
+
+		-
+			rawMessage: 'Aggregate state property "name" should only be written in an #[Apply] method, but is written in "Patchlevel\EventSourcingPHPStanExtension\Tests\Invalid\Profile::otherWriteForms()".'
+			identifier: patchlevel.noStateWriteWhenNotApplying
+			count: 2
+			path: tests/Invalid/Profile.php
+
+		-
 			rawMessage: 'Method Patchlevel\EventSourcingPHPStanExtension\Tests\Invalid\Profile::deeplyHiddenRecordThat() records an event and is called from apply method applyNameChanged().'
 			identifier: patchlevel.noRecordThatWhenApplying
 			count: 1

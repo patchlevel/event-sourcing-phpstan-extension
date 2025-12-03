@@ -10,3 +10,8 @@ services:
 			parser: @defaultAnalysisParser
 		tags:
 			- phpstan.restrictedMethodUsageExtension
+
+	-
+		class: Patchlevel\EventSourcingPHPStanExtension\DontWriteStateWhenNotApplyingRule
+		tags:
+			- phpstan.rules.rule
