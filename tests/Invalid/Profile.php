@@ -6,6 +6,7 @@ use Patchlevel\EventSourcing\Aggregate\BasicAggregateRoot;
 use Patchlevel\EventSourcing\Aggregate\Uuid;
 use Patchlevel\EventSourcing\Attribute\Apply;
 use Patchlevel\EventSourcing\Attribute\Id;
+use Patchlevel\EventSourcingPHPStanExtension\Tests\Valid\NameChanged;
 use Patchlevel\EventSourcingPHPStanExtension\Tests\Valid\ProfileCreated;
 
 class Profile extends BasicAggregateRoot
@@ -28,12 +29,18 @@ class Profile extends BasicAggregateRoot
         $this->id = $event->id;
         $this->name = $event->name;
         $this->recordThat(new ProfileCreated($event->id, $event->name));
+    }
+
+    #[Apply]
+    protected function applyNameChanged(NameChanged $event): void
+    {
+        $this->name = $event->name;
         $this->hiddenRecordThat($event);
     }
 
-    public function hiddenRecordThat(ProfileCreated $event): void
+    public function hiddenRecordThat(NameChanged $event): void
     {
-        $this->recordThat(new ProfileCreated($event->id, $event->name));
+        $this->recordThat(new NameChanged($event->name));
     }
 
     public function id(): Uuid
