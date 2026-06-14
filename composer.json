@@ -2,12 +2,15 @@
   "name": "patchlevel/event-sourcing-phpstan-extension",
   "type": "phpstan-extension",
   "license": "MIT",
-  "description": "phpstan extension for patchlevel/event-sourcing",
+  "description": "PHPStan that understands your aggregates and catches event sourcing mistakes before runtime",
   "keywords": [
+    "patchlevel",
     "event-sourcing",
-    "phpstan"
+    "phpstan",
+    "static-analysis",
+    "aggregate"
   ],
-  "homepage": "https://github.com/patchlevel/event-sourcing-phpstan-extension",
+  "homepage": "https://patchlevel.dev/docs/event-sourcing-phpstan-extension/latest",
   "authors": [
     {
       "name": "Daniel Badura",
@@ -26,7 +29,8 @@
     "patchlevel/coding-standard": "^1.3.0",
     "patchlevel/event-sourcing": "^3.4.0",
     "phpstan/phpstan-strict-rules": "^2.0.4",
-    "roave/security-advisories": "dev-master"
+    "roave/security-advisories": "dev-master",
+    "wnx/commonmark-markdown-renderer": "^1.6"
   },
   "config": {
     "preferred-install": {

@@ -1,0 +1,6 @@
+{
+  "navigation": [
+    { "title": "Introduction", "file": "introduction.md" },
+    { "title": "Getting Started", "file": "getting-started.md" }
+  ]
+}
