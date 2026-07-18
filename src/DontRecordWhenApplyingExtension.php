@@ -63,7 +63,7 @@ final class DontRecordWhenApplyingExtension implements RestrictedMethodUsageExte
                 AggregateRoot::class,
                 $function->getName() ?? 'unknown',
             ),
-            identifier: 'method.noRecordThatWhenApplying',
+            identifier: 'patchlevel.noRecordThatWhenApplying',
         );
     }
 

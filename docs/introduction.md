@@ -14,13 +14,13 @@ and it catches a common mistake before it ever reaches runtime.
 ```bash
 composer require --dev patchlevel/event-sourcing-phpstan-extension
 ```
-Register the extension in your `phpstan.neon`:
+If you use [phpstan/extension-installer](https://github.com/phpstan/extension-installer), the extension is registered automatically and you are done. Otherwise register it in your `phpstan.neon`:
 
 ```neon
 includes:
     - vendor/patchlevel/event-sourcing-phpstan-extension/extension.neon
 ```
-That is all the configuration the extension needs. Both rules are active as soon as the file is included.
+That is all the configuration the extension needs. Both rules are active as soon as the extension is registered.
 
 ## Integration
 

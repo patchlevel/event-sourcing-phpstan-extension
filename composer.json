@@ -50,5 +50,12 @@
     "psr-4": {
       "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\": "tests/"
     }
+  },
+  "extra": {
+    "phpstan": {
+      "includes": [
+        "extension.neon"
+      ]
+    }
   }
 }
