@@ -4,6 +4,7 @@ namespace Patchlevel\EventSourcingPHPStanExtension\Tests\Valid;
 
 use Patchlevel\EventSourcing\Aggregate\BasicChildAggregate;
 use Patchlevel\EventSourcing\Aggregate\Uuid;
+use Patchlevel\EventSourcing\Attribute\Apply;
 
 class PersonalInformation extends BasicChildAggregate
 {
@@ -19,6 +20,7 @@ class PersonalInformation extends BasicChildAggregate
         return $self;
     }
 
+    #[Apply]
     protected function applyProfileCreated(ProfileCreated $event): void
     {
         $this->id = $event->id;

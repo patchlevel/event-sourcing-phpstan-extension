@@ -7,6 +7,7 @@ and it catches common mistakes before they ever reach runtime.
 ## Features
 
 * [Property initialization](getting-started.md#property-initialization) for aggregate roots and child aggregates, so PHPStan does not report false uninitialized property errors.
+* [Unused properties](getting-started.md#unused-properties) are reported when no apply method writes them, because such a property can never receive state from an event.
 * [Recording in apply methods](getting-started.md#recording-in-apply-methods) is reported as an error, because recording events while replaying them leads to duplicated events.
 * [Writing state outside apply methods](getting-started.md#writing-state-outside-apply-methods) is reported as an error, because state that is not derived from an event is lost when the aggregate is reloaded.
 
