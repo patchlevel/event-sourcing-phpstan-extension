@@ -6,5 +6,7 @@ services:
 
 	-
 		class: Patchlevel\EventSourcingPHPStanExtension\DontRecordWhenApplyingExtension
+		arguments:
+			parser: @defaultAnalysisParser
 		tags:
 			- phpstan.restrictedMethodUsageExtension

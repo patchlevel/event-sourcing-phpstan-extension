@@ -1,13 +1,31 @@
 parameters:
 	ignoreErrors:
 		-
-			rawMessage: 'Method Patchlevel\EventSourcing\Aggregate\AggregateRoot::recordThat() is called from applyNameChanged which is an apply method.'
+			rawMessage: 'Method Patchlevel\EventSourcing\Aggregate\BasicChildAggregate::recordThat() records an event and is called from apply method applyNameChanged().'
+			identifier: patchlevel.noRecordThatWhenApplying
+			count: 1
+			path: tests/Invalid/PersonalInformation.php
+
+		-
+			rawMessage: 'Method Patchlevel\EventSourcingPHPStanExtension\Tests\Invalid\Profile::deeplyHiddenRecordThat() records an event and is called from apply method applyNameChanged().'
 			identifier: patchlevel.noRecordThatWhenApplying
 			count: 1
 			path: tests/Invalid/Profile.php
 
 		-
-			rawMessage: 'Method Patchlevel\EventSourcing\Aggregate\AggregateRoot::recordThat() is called from applyProfileCreated which is an apply method.'
+			rawMessage: 'Method Patchlevel\EventSourcingPHPStanExtension\Tests\Invalid\Profile::hiddenRecordThat() records an event and is called from apply method applyNameChanged().'
+			identifier: patchlevel.noRecordThatWhenApplying
+			count: 1
+			path: tests/Invalid/Profile.php
+
+		-
+			rawMessage: 'Method Patchlevel\EventSourcingPHPStanExtension\Tests\Invalid\Profile::traitHiddenRecordThat() records an event and is called from apply method applyNameChanged().'
+			identifier: patchlevel.noRecordThatWhenApplying
+			count: 1
+			path: tests/Invalid/Profile.php
+
+		-
+			rawMessage: 'Method Patchlevel\EventSourcing\Aggregate\BasicAggregateRoot::recordThat() records an event and is called from apply method applyProfileCreated().'
 			identifier: patchlevel.noRecordThatWhenApplying
 			count: 1
 			path: tests/Invalid/Profile.php
