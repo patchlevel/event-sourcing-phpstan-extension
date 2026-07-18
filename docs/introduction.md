@@ -21,7 +21,8 @@ If you use [phpstan/extension-installer](https://github.com/phpstan/extension-in
 includes:
     - vendor/patchlevel/event-sourcing-phpstan-extension/extension.neon
 ```
-That is all the configuration the extension needs. All checks are active as soon as the extension is registered.
+That is all the configuration the extension needs. All checks are active as soon as the extension is registered,
+and single rules can be deactivated through the [configuration parameters](getting-started.md#configuration).
 
 ## Integration
 

@@ -19,7 +19,7 @@ includes:
     - vendor/patchlevel/event-sourcing-phpstan-extension/extension.neon
 ```
 :::note
-The extension registers all of its checks at once. There is nothing else to configure.
+The extension registers all of its checks at once. They are enabled by default and single rules can be turned off, see [configuration](#configuration).
 :::
 
 ## The example aggregate
@@ -151,7 +151,6 @@ Aggregate state property "name" should only be written in an #[Apply] method,
 but is written in "Profile::create()".
 💡 Record an event instead and change the state in an #[Apply] method.
 ```
-
 It also covers every way a property can be mutated: plain assignments, compound assignments like `.=` and `+=`,
 increments and decrements, array writes like `$this->items[] = ...`, list destructuring, `unset()` and static
 properties.
@@ -160,6 +159,18 @@ properties.
 This also applies to helper methods inside the aggregate: a private method that assigns a property is reported at the offending line, no matter where it is called from.
 :::
 
+## Configuration
+
+All rules are enabled by default. You can deactivate single rules in your `phpstan.neon`,
+the same way PHPStan handles its own rules:
+
+```neon
+parameters:
+    patchlevelEventSourcing:
+        propertyInitialization: false
+        noRecordThatWhenApplying: false
+        noStateWriteWhenNotApplying: false
+```
 ## Result
 
 With the extension enabled, PHPStan understands your aggregates: it stops complaining about
