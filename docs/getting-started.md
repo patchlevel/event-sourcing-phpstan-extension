@@ -101,11 +101,11 @@ final class Profile extends BasicAggregateRoot
 Running PHPStan now produces:
 
 ```
-Method Patchlevel\EventSourcing\Aggregate\AggregateRoot::recordThat() is called
-from applyProfileCreated which is an apply method.
+Method Patchlevel\EventSourcing\Aggregate\BasicAggregateRoot::recordThat() records
+an event and is called from apply method applyProfileCreated().
 ```
-:::info
-The check also follows calls into helper methods, so hiding `recordThat()` behind another method does not bypass the rule.
+:::note
+The check follows calls into helper methods, even across multiple levels and into traits, so hiding `recordThat()` behind other methods does not bypass the rule. It covers child aggregates as well. Calling a `recordThat()` method on an unrelated object, for example a collaborator service, is not reported.
 :::
 
 ## Result
