@@ -16,7 +16,7 @@
 composer require --dev patchlevel/event-sourcing-phpstan-extension
 ```
 
-Register the extension in your `phpstan.neon`:
+If you use [phpstan/extension-installer](https://github.com/phpstan/extension-installer), the extension is registered automatically. Otherwise register it in your `phpstan.neon`:
 
 ```neon
 includes:

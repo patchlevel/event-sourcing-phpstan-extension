@@ -2,12 +2,12 @@ parameters:
 	ignoreErrors:
 		-
 			rawMessage: 'Method Patchlevel\EventSourcing\Aggregate\AggregateRoot::recordThat() is called from applyNameChanged which is an apply method.'
-			identifier: method.noRecordThatWhenApplying
+			identifier: patchlevel.noRecordThatWhenApplying
 			count: 1
 			path: tests/Invalid/Profile.php
 
 		-
 			rawMessage: 'Method Patchlevel\EventSourcing\Aggregate\AggregateRoot::recordThat() is called from applyProfileCreated which is an apply method.'
-			identifier: method.noRecordThatWhenApplying
+			identifier: patchlevel.noRecordThatWhenApplying
 			count: 1
 			path: tests/Invalid/Profile.php

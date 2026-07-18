@@ -12,7 +12,7 @@ composer require --dev patchlevel/event-sourcing-phpstan-extension
 ```
 ## Enable the extension
 
-Include the shipped configuration in your `phpstan.neon`:
+If you use [phpstan/extension-installer](https://github.com/phpstan/extension-installer), the extension is enabled automatically and you can skip this step. Otherwise include the shipped configuration in your `phpstan.neon`:
 
 ```neon
 includes:
