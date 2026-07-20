@@ -20,6 +20,7 @@ class Profile extends BasicAggregateRoot
     private string $name;
     private EventCollector $collector;
     private string $email;
+    private string $lastName;
     private int $count = 0;
 
     /** @var array<int, string> */
@@ -52,6 +53,7 @@ class Profile extends BasicAggregateRoot
     protected function applyNameChanged(NameChanged $event): void
     {
         $this->name = $event->name;
+        $this->lastName = $event->name;
         $this->hiddenRecordThat($event);
         $this->deeplyHiddenRecordThat($event);
         $this->traitHiddenRecordThat($event);

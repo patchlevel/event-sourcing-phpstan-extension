@@ -2,6 +2,7 @@ parameters:
 	patchlevelEventSourcing:
 		propertyInitialization: true
 		unusedProperty: true
+		writeOnlyProperty: true
 		noRecordThatWhenApplying: true
 		noStateWriteWhenNotApplying: true
 
@@ -9,6 +10,7 @@ parametersSchema:
 	patchlevelEventSourcing: structure([
 		propertyInitialization: bool()
 		unusedProperty: bool()
+		writeOnlyProperty: bool()
 		noRecordThatWhenApplying: bool()
 		noStateWriteWhenNotApplying: bool()
 	])
@@ -18,6 +20,8 @@ conditionalTags:
 		phpstan.properties.readWriteExtension: %patchlevelEventSourcing.propertyInitialization%
 	Patchlevel\EventSourcingPHPStanExtension\UnusedPropertyRule:
 		phpstan.rules.rule: %patchlevelEventSourcing.unusedProperty%
+	Patchlevel\EventSourcingPHPStanExtension\WriteOnlyPropertyRule:
+		phpstan.rules.rule: %patchlevelEventSourcing.writeOnlyProperty%
 	Patchlevel\EventSourcingPHPStanExtension\DontRecordWhenApplyingExtension:
 		phpstan.restrictedMethodUsageExtension: %patchlevelEventSourcing.noRecordThatWhenApplying%
 	Patchlevel\EventSourcingPHPStanExtension\DontWriteStateWhenNotApplyingRule:
@@ -29,6 +33,9 @@ services:
 
 	-
 		class: Patchlevel\EventSourcingPHPStanExtension\UnusedPropertyRule
+
+	-
+		class: Patchlevel\EventSourcingPHPStanExtension\WriteOnlyPropertyRule
 
 	-
 		class: Patchlevel\EventSourcingPHPStanExtension\DontRecordWhenApplyingExtension

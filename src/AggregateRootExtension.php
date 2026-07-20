@@ -13,7 +13,7 @@ final class AggregateRootExtension implements ReadWritePropertiesExtension
 {
     public function isAlwaysRead(PropertyReflection $property, string $propertyName): bool
     {
-        return false;
+        return $this->isAggregate($property);
     }
 
     public function isAlwaysWritten(PropertyReflection $property, string $propertyName): bool

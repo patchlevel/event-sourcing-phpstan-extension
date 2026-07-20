@@ -110,6 +110,51 @@ of your aggregate, which is domain specific knowledge static analysis cannot hav
 that some apply method can populate the property at all. Properties with a default value and static
 properties are skipped, they do not depend on an event to have one.
 
+## Write only properties
+
+The mirror image of an unused property: state that apply methods populate but that nothing ever
+reads. An aggregate holds state for exactly one purpose, deciding whether a command is allowed,
+so a property that is written but never read is not part of any decision. The extension reports it:
+
+```php
+use Patchlevel\EventSourcing\Aggregate\BasicAggregateRoot;
+use Patchlevel\EventSourcing\Aggregate\Uuid;
+use Patchlevel\EventSourcing\Attribute\Apply;
+use Patchlevel\EventSourcing\Attribute\Id;
+
+final class Profile extends BasicAggregateRoot
+{
+    #[Id]
+    private Uuid $id;
+    private string $name;
+    private string $lastName; // reported
+
+    #[Apply]
+    protected function applyProfileCreated(ProfileCreated $event): void
+    {
+        $this->id = $event->id;
+        $this->name = $event->name;
+        $this->lastName = $event->name;
+    }
+
+    public function name(): string
+    {
+        return $this->name;
+    }
+}
+```
+Running PHPStan now produces:
+
+```
+Property "lastName" of aggregate "Profile" is written in an #[Apply] method
+but never read, so it is not used to check any invariants.
+💡 Use the property to check invariants or remove it. State that only exists
+for reading belongs in a projection.
+```
+Any read counts: an invariant check in a command method, a read inside an apply method, or a getter.
+Only private properties are checked, and properties the library itself reads, `#[Id]` and
+`#[ChildAggregate]`, are skipped.
+
 ## Recording in apply methods
 
 Apply methods are also called while an aggregate is rebuilt from its stored events. If you record a
@@ -208,16 +253,17 @@ parameters:
     patchlevelEventSourcing:
         propertyInitialization: false
         unusedProperty: false
+        writeOnlyProperty: false
         noRecordThatWhenApplying: false
         noStateWriteWhenNotApplying: false
 ```
 ## Result
 
-With the extension enabled, PHPStan understands your aggregates: it stops complaining about
-properties that are initialized through events, it reports properties that no apply method ever
-writes, it fails the build when an apply method records an event, and it fails the build when
-aggregate state is written outside an apply method. You get accurate static analysis without
-writing a single annotation.
+With the extension enabled, PHPStan understands your aggregates: it stops complaining about properties that are
+initialized through events, it reports properties that no apply method ever writes, it reports state that is written but
+never used for a decision, it fails the build when an apply method records an event, and it fails the build when
+aggregate state is written outside an apply method. You get accurate static analysis without writing a single
+annotation. You get accurate static analysis without writing a single annotation.
 
 ## Learn more
 

@@ -71,3 +71,9 @@ parameters:
 			identifier: patchlevel.unusedProperty
 			count: 1
 			path: tests/Invalid/Profile.php
+
+		-
+			rawMessage: 'Property "lastName" of aggregate "Patchlevel\EventSourcingPHPStanExtension\Tests\Invalid\Profile" is written in an #[Apply] method but never read, so it is not used to check any invariants.'
+			identifier: patchlevel.writeOnlyProperty
+			count: 1
+			path: tests/Invalid/Profile.php
