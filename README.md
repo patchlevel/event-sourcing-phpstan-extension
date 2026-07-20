@@ -9,6 +9,7 @@
 
 * [Property initialization](https://patchlevel.dev/docs/event-sourcing-phpstan-extension/latest/getting-started#property-initialization) for aggregate roots and child aggregates, so PHPStan does not report false uninitialized property errors.
 * [Recording in apply methods](https://patchlevel.dev/docs/event-sourcing-phpstan-extension/latest/getting-started#recording-in-apply-methods) is reported as an error, because recording events while replaying them leads to duplicated events.
+* [Writing state outside apply methods](https://patchlevel.dev/docs/event-sourcing-phpstan-extension/latest/getting-started#writing-state-outside-apply-methods) is reported as an error, because state that is not derived from an event is lost when the aggregate is reloaded.
 
 ## Installation
 

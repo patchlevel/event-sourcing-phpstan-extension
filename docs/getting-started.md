@@ -1,6 +1,6 @@
 # Getting Started
 
-This guide shows you how to enable the extension and what each of its two rules does.
+This guide shows you how to enable the extension and what each of its checks does.
 We use a small `Profile` aggregate as the running example throughout the documentation.
 
 ## Installation
@@ -19,7 +19,7 @@ includes:
     - vendor/patchlevel/event-sourcing-phpstan-extension/extension.neon
 ```
 :::note
-The extension registers two rules at once. There is nothing else to configure.
+The extension registers all of its checks at once. There is nothing else to configure.
 :::
 
 ## The example aggregate
@@ -105,14 +105,67 @@ Method Patchlevel\EventSourcing\Aggregate\BasicAggregateRoot::recordThat() recor
 an event and is called from apply method applyProfileCreated().
 ```
 :::note
-The check follows calls into helper methods, even across multiple levels and into traits, so hiding `recordThat()` behind other methods does not bypass the rule. It covers child aggregates as well. Calling a `recordThat()` method on an unrelated object, for example a collaborator service, is not reported.
+The check also follows calls into helper methods, so hiding `recordThat()` behind another method does not bypass the rule.
+:::
+
+## Writing state outside apply methods
+
+The state of an aggregate must only change inside apply methods. That is what makes the state
+reproducible: every change is the result of an applied event. A property that is written anywhere
+else, for example directly in a command method, is not backed by an event, so the change is silently
+lost the next time the aggregate is loaded from the store. The extension flags every such write:
+
+```php
+use Patchlevel\EventSourcing\Aggregate\BasicAggregateRoot;
+use Patchlevel\EventSourcing\Aggregate\Uuid;
+use Patchlevel\EventSourcing\Attribute\Apply;
+use Patchlevel\EventSourcing\Attribute\Id;
+
+final class Profile extends BasicAggregateRoot
+{
+    #[Id]
+    private Uuid $id;
+    private string $name;
+
+    public static function create(Uuid $id, string $name): self
+    {
+        $self = new self();
+        $self->recordThat(new ProfileCreated($id, $name));
+        $self->name = $name; // reported
+
+        return $self;
+    }
+
+    #[Apply]
+    protected function applyProfileCreated(ProfileCreated $event): void
+    {
+        $this->id = $event->id;
+        $this->name = $event->name; // allowed
+    }
+}
+```
+Running PHPStan now produces:
+
+```
+Aggregate state property "name" should only be written in an #[Apply] method,
+but is written in "Profile::create()".
+💡 Record an event instead and change the state in an #[Apply] method.
+```
+
+It also covers every way a property can be mutated: plain assignments, compound assignments like `.=` and `+=`,
+increments and decrements, array writes like `$this->items[] = ...`, list destructuring, `unset()` and static
+properties.
+
+:::info
+This also applies to helper methods inside the aggregate: a private method that assigns a property is reported at the offending line, no matter where it is called from.
 :::
 
 ## Result
 
 With the extension enabled, PHPStan understands your aggregates: it stops complaining about
-properties that are initialized through events, and it fails the build when an apply method records
-an event. You get accurate static analysis without writing a single annotation.
+properties that are initialized through events, it fails the build when an apply method records
+an event, and it fails the build when aggregate state is written outside an apply method. You get
+accurate static analysis without writing a single annotation.
 
 ## Learn more
 
