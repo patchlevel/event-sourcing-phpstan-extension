@@ -71,6 +71,45 @@ as initialized, so the analysis passes.
 This works for both aggregate roots and child aggregates: any class implementing `AggregateRoot` or `ChildAggregate` has its properties treated as initialized.
 :::
 
+## Unused properties
+
+Because aggregate state only changes in apply methods, a property that no apply method writes can
+never receive a value. Such a property is dead weight: every read of it will fail at runtime. The
+extension reports it as unused:
+
+```php
+use Patchlevel\EventSourcing\Aggregate\BasicAggregateRoot;
+use Patchlevel\EventSourcing\Aggregate\Uuid;
+use Patchlevel\EventSourcing\Attribute\Apply;
+use Patchlevel\EventSourcing\Attribute\Id;
+
+final class Profile extends BasicAggregateRoot
+{
+    #[Id]
+    private Uuid $id;
+    private string $name;
+    private string $email; // reported
+
+    #[Apply]
+    protected function applyProfileCreated(ProfileCreated $event): void
+    {
+        $this->id = $event->id;
+        $this->name = $event->name;
+    }
+}
+```
+Running PHPStan now produces:
+
+```
+Property "email" of aggregate "Profile" is never written in an #[Apply] method
+and is therefore unused.
+💡 Change the state in an #[Apply] method or remove the property.
+```
+The rule does not try to prove *when* a property becomes initialized. That depends on the lifecycle
+of your aggregate, which is domain specific knowledge static analysis cannot have. It only checks
+that some apply method can populate the property at all. Properties with a default value and static
+properties are skipped, they do not depend on an event to have one.
+
 ## Recording in apply methods
 
 Apply methods are also called while an aggregate is rebuilt from its stored events. If you record a
@@ -168,15 +207,17 @@ the same way PHPStan handles its own rules:
 parameters:
     patchlevelEventSourcing:
         propertyInitialization: false
+        unusedProperty: false
         noRecordThatWhenApplying: false
         noStateWriteWhenNotApplying: false
 ```
 ## Result
 
 With the extension enabled, PHPStan understands your aggregates: it stops complaining about
-properties that are initialized through events, it fails the build when an apply method records
-an event, and it fails the build when aggregate state is written outside an apply method. You get
-accurate static analysis without writing a single annotation.
+properties that are initialized through events, it reports properties that no apply method ever
+writes, it fails the build when an apply method records an event, and it fails the build when
+aggregate state is written outside an apply method. You get accurate static analysis without
+writing a single annotation.
 
 ## Learn more
 

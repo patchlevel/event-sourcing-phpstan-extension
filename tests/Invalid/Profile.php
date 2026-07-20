@@ -19,6 +19,7 @@ class Profile extends BasicAggregateRoot
     private Uuid $id;
     private string $name;
     private EventCollector $collector;
+    private string $email;
     private int $count = 0;
 
     /** @var array<int, string> */
@@ -114,5 +115,10 @@ class Profile extends BasicAggregateRoot
     public function name(): string
     {
         return $this->name;
+    }
+
+    public function email(): string
+    {
+        return $this->email;
     }
 }

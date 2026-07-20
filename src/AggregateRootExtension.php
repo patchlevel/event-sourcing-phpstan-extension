@@ -18,10 +18,15 @@ final class AggregateRootExtension implements ReadWritePropertiesExtension
 
     public function isAlwaysWritten(PropertyReflection $property, string $propertyName): bool
     {
-        return false;
+        return $this->isAggregate($property);
     }
 
     public function isInitialized(PropertyReflection $property, string $propertyName): bool
+    {
+        return $this->isAggregate($property);
+    }
+
+    private function isAggregate(PropertyReflection $property): bool
     {
         $interfaces = $property->getDeclaringClass()->getInterfaces();
 
