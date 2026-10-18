@@ -41,8 +41,6 @@ services:
 		class: Patchlevel\EventSourcingPHPStanExtension\DontRecordWhenApplyingExtension
 		arguments:
 			parser: @defaultAnalysisParser
-		tags:
-			- phpstan.restrictedMethodUsageExtension
 
 	-
 		class: Patchlevel\EventSourcingPHPStanExtension\DontWriteStateWhenNotApplyingRule
