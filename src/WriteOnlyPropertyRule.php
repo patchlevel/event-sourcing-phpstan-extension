@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Patchlevel\EventSourcingPHPStanExtension;
 
 use Patchlevel\EventSourcing\Aggregate\AggregateRoot;
-use Patchlevel\EventSourcing\Aggregate\ChildAggregate;
 use Patchlevel\EventSourcing\Attribute\Apply;
-use Patchlevel\EventSourcing\Attribute\ChildAggregate as ChildAggregateAttribute;
 use Patchlevel\EventSourcing\Attribute\Id;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
@@ -57,10 +55,7 @@ final class WriteOnlyPropertyRule implements Rule
     {
         $classReflection = $node->getClassReflection();
 
-        if (
-            !$classReflection->implementsInterface(AggregateRoot::class)
-            && !$classReflection->implementsInterface(ChildAggregate::class)
-        ) {
+        if (!$classReflection->implementsInterface(AggregateRoot::class)) {
             return [];
         }
 
@@ -149,7 +144,7 @@ final class WriteOnlyPropertyRule implements Rule
     {
         foreach ($property->attrGroups as $attrGroup) {
             foreach ($attrGroup->attrs as $attr) {
-                if ($attr->name->toString() === Id::class || $attr->name->toString() === ChildAggregateAttribute::class) {
+                if ($attr->name->toString() === Id::class) {
                     return true;
                 }
             }

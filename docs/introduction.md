@@ -6,7 +6,7 @@ and it catches common mistakes before they ever reach runtime.
 
 ## Features
 
-* [Property initialization](getting-started.md#property-initialization) for aggregate roots and child aggregates, so PHPStan does not report false uninitialized property errors.
+* [Property initialization](getting-started.md#property-initialization) for aggregate roots, so PHPStan does not report false uninitialized property errors.
 * [Unused properties](getting-started.md#unused-properties) are reported when no apply method writes them, because such a property can never receive state from an event.
 * [Write only properties](getting-started.md#write-only-properties) are reported when apply methods store state that is never read, because state that is not used to check invariants belongs in a projection.
 * [Recording in apply methods](getting-started.md#recording-in-apply-methods) is reported as an error, because recording events while replaying them leads to duplicated events.
@@ -31,5 +31,5 @@ and single rules can be deactivated through the [configuration parameters](getti
 * [patchlevel/event-sourcing](https://github.com/patchlevel/event-sourcing) is the library this extension analyses.
 
 :::tip
-New to the extension? The [getting started](getting-started.md) guide walks you through enabling it and seeing both rules in action.
+New to the extension? The [getting started](getting-started.md) guide walks you through enabling it and seeing every check in action.
 :::

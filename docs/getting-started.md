@@ -29,9 +29,9 @@ that are assigned inside apply methods, not in a constructor.
 
 ```php
 use Patchlevel\EventSourcing\Aggregate\BasicAggregateRoot;
-use Patchlevel\EventSourcing\Aggregate\Uuid;
 use Patchlevel\EventSourcing\Attribute\Apply;
 use Patchlevel\EventSourcing\Attribute\Id;
+use Patchlevel\EventSourcing\Identifier\Uuid;
 
 final class Profile extends BasicAggregateRoot
 {
@@ -68,7 +68,7 @@ the events are applied. The extension knows that `Profile` is an aggregate and m
 as initialized, so the analysis passes.
 
 :::note
-This works for both aggregate roots and child aggregates: any class implementing `AggregateRoot` or `ChildAggregate` has its properties treated as initialized.
+This works for every class implementing `AggregateRoot`, not only for subclasses of `BasicAggregateRoot`.
 :::
 
 ## Unused properties
@@ -79,9 +79,9 @@ extension reports it as unused:
 
 ```php
 use Patchlevel\EventSourcing\Aggregate\BasicAggregateRoot;
-use Patchlevel\EventSourcing\Aggregate\Uuid;
 use Patchlevel\EventSourcing\Attribute\Apply;
 use Patchlevel\EventSourcing\Attribute\Id;
+use Patchlevel\EventSourcing\Identifier\Uuid;
 
 final class Profile extends BasicAggregateRoot
 {
@@ -118,9 +118,9 @@ so a property that is written but never read is not part of any decision. The ex
 
 ```php
 use Patchlevel\EventSourcing\Aggregate\BasicAggregateRoot;
-use Patchlevel\EventSourcing\Aggregate\Uuid;
 use Patchlevel\EventSourcing\Attribute\Apply;
 use Patchlevel\EventSourcing\Attribute\Id;
+use Patchlevel\EventSourcing\Identifier\Uuid;
 
 final class Profile extends BasicAggregateRoot
 {
@@ -152,8 +152,7 @@ but never read, so it is not used to check any invariants.
 for reading belongs in a projection.
 ```
 Any read counts: an invariant check in a command method, a read inside an apply method, or a getter.
-Only private properties are checked, and properties the library itself reads, `#[Id]` and
-`#[ChildAggregate]`, are skipped.
+Only private properties are checked, and the `#[Id]` property is skipped, because the library itself reads it.
 
 ## Recording in apply methods
 
@@ -163,9 +162,9 @@ flags this:
 
 ```php
 use Patchlevel\EventSourcing\Aggregate\BasicAggregateRoot;
-use Patchlevel\EventSourcing\Aggregate\Uuid;
 use Patchlevel\EventSourcing\Attribute\Apply;
 use Patchlevel\EventSourcing\Attribute\Id;
+use Patchlevel\EventSourcing\Identifier\Uuid;
 
 final class Profile extends BasicAggregateRoot
 {
@@ -201,9 +200,9 @@ lost the next time the aggregate is loaded from the store. The extension flags e
 
 ```php
 use Patchlevel\EventSourcing\Aggregate\BasicAggregateRoot;
-use Patchlevel\EventSourcing\Aggregate\Uuid;
 use Patchlevel\EventSourcing\Attribute\Apply;
 use Patchlevel\EventSourcing\Attribute\Id;
+use Patchlevel\EventSourcing\Identifier\Uuid;
 
 final class Profile extends BasicAggregateRoot
 {
@@ -262,8 +261,8 @@ parameters:
 With the extension enabled, PHPStan understands your aggregates: it stops complaining about properties that are
 initialized through events, it reports properties that no apply method ever writes, it reports state that is written but
 never used for a decision, it fails the build when an apply method records an event, and it fails the build when
-aggregate state is written outside an apply method. You get accurate static analysis without writing a single
-annotation. You get accurate static analysis without writing a single annotation.
+aggregate state is written outside an apply method.
+You get accurate static analysis without writing a single annotation.
 
 ## Learn more
 
