@@ -12,6 +12,7 @@
 * [Write only properties](https://patchlevel.dev/docs/event-sourcing-phpstan-extension/latest/getting-started#write-only-properties) are reported when apply methods store state that is never read, because state that is not used to check invariants belongs in a projection.
 * [Recording in apply methods](https://patchlevel.dev/docs/event-sourcing-phpstan-extension/latest/getting-started#recording-in-apply-methods) is reported as an error, because recording events while replaying them leads to duplicated events.
 * [Writing state outside apply methods](https://patchlevel.dev/docs/event-sourcing-phpstan-extension/latest/getting-started#writing-state-outside-apply-methods) is reported as an error, because state that is not derived from an event is lost when the aggregate is reloaded.
+* [Typed decisions](https://patchlevel.dev/docs/event-sourcing-phpstan-extension/latest/getting-started#typed-decisions) for the dynamic consistency boundary, so PHPStan knows the state of every projection a decision reads, also when several are read at once.
 
 ## Installation
 

@@ -46,3 +46,13 @@ services:
 
 	-
 		class: Patchlevel\EventSourcingPHPStanExtension\DontWriteStateWhenNotApplyingRule
+
+	-
+		class: Patchlevel\EventSourcingPHPStanExtension\DecisionExtension
+		tags:
+			- phpstan.broker.dynamicMethodReturnTypeExtension
+
+	-
+		class: Patchlevel\EventSourcingPHPStanExtension\ProjectionBuilderExtension
+		tags:
+			- phpstan.broker.dynamicMethodReturnTypeExtension
