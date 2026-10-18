@@ -2,7 +2,7 @@
 
 namespace Patchlevel\EventSourcingPHPStanExtension\Tests\Valid;
 
-use Patchlevel\EventSourcing\Aggregate\Uuid;
+use Patchlevel\EventSourcing\Identifier\Uuid;
 use Patchlevel\EventSourcing\Serializer\Normalizer\IdNormalizer;
 
 class ProfileCreated

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Patchlevel\EventSourcingPHPStanExtension;
 
 use Patchlevel\EventSourcing\Aggregate\AggregateRoot;
-use Patchlevel\EventSourcing\Aggregate\ChildAggregate;
 use Patchlevel\EventSourcing\Attribute\Apply;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
@@ -80,8 +79,7 @@ final class DontRecordWhenApplyingExtension implements RestrictedMethodUsageExte
 
     private function isAggregate(ClassReflection $classReflection): bool
     {
-        return $classReflection->implementsInterface(AggregateRoot::class)
-            || $classReflection->implementsInterface(ChildAggregate::class);
+        return $classReflection->implementsInterface(AggregateRoot::class);
     }
 
     private function isApplyMethod(FunctionReflection|MethodReflection $function): bool

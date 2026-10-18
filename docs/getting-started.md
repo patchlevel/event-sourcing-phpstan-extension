@@ -29,9 +29,9 @@ that are assigned inside apply methods, not in a constructor.
 
 ```php
 use Patchlevel\EventSourcing\Aggregate\BasicAggregateRoot;
-use Patchlevel\EventSourcing\Aggregate\Uuid;
 use Patchlevel\EventSourcing\Attribute\Apply;
 use Patchlevel\EventSourcing\Attribute\Id;
+use Patchlevel\EventSourcing\Identifier\Uuid;
 
 final class Profile extends BasicAggregateRoot
 {
@@ -68,7 +68,7 @@ the events are applied. The extension knows that `Profile` is an aggregate and m
 as initialized, so the analysis passes.
 
 :::note
-This works for both aggregate roots and child aggregates: any class implementing `AggregateRoot` or `ChildAggregate` has its properties treated as initialized.
+This works for every class implementing `AggregateRoot`, not only for subclasses of `BasicAggregateRoot`.
 :::
 
 ## Unused properties
@@ -79,9 +79,9 @@ extension reports it as unused:
 
 ```php
 use Patchlevel\EventSourcing\Aggregate\BasicAggregateRoot;
-use Patchlevel\EventSourcing\Aggregate\Uuid;
 use Patchlevel\EventSourcing\Attribute\Apply;
 use Patchlevel\EventSourcing\Attribute\Id;
+use Patchlevel\EventSourcing\Identifier\Uuid;
 
 final class Profile extends BasicAggregateRoot
 {
@@ -118,9 +118,9 @@ so a property that is written but never read is not part of any decision. The ex
 
 ```php
 use Patchlevel\EventSourcing\Aggregate\BasicAggregateRoot;
-use Patchlevel\EventSourcing\Aggregate\Uuid;
 use Patchlevel\EventSourcing\Attribute\Apply;
 use Patchlevel\EventSourcing\Attribute\Id;
+use Patchlevel\EventSourcing\Identifier\Uuid;
 
 final class Profile extends BasicAggregateRoot
 {
@@ -152,8 +152,7 @@ but never read, so it is not used to check any invariants.
 for reading belongs in a projection.
 ```
 Any read counts: an invariant check in a command method, a read inside an apply method, or a getter.
-Only private properties are checked, and properties the library itself reads, `#[Id]` and
-`#[ChildAggregate]`, are skipped.
+Only private properties are checked, and the `#[Id]` property is skipped, because the library itself reads it.
 
 ## Recording in apply methods
 
@@ -163,9 +162,9 @@ flags this:
 
 ```php
 use Patchlevel\EventSourcing\Aggregate\BasicAggregateRoot;
-use Patchlevel\EventSourcing\Aggregate\Uuid;
 use Patchlevel\EventSourcing\Attribute\Apply;
 use Patchlevel\EventSourcing\Attribute\Id;
+use Patchlevel\EventSourcing\Identifier\Uuid;
 
 final class Profile extends BasicAggregateRoot
 {
@@ -201,9 +200,9 @@ lost the next time the aggregate is loaded from the store. The extension flags e
 
 ```php
 use Patchlevel\EventSourcing\Aggregate\BasicAggregateRoot;
-use Patchlevel\EventSourcing\Aggregate\Uuid;
 use Patchlevel\EventSourcing\Attribute\Apply;
 use Patchlevel\EventSourcing\Attribute\Id;
+use Patchlevel\EventSourcing\Identifier\Uuid;
 
 final class Profile extends BasicAggregateRoot
 {
@@ -243,6 +242,77 @@ properties.
 This also applies to helper methods inside the aggregate: a private method that assigns a property is reported at the offending line, no matter where it is called from.
 :::
 
+## Typed decisions
+
+With the [dynamic consistency boundary](https://patchlevel.dev/docs/event-sourcing/latest/dynamic-consistency-boundary),
+a command handler reads the state of projections through a `Decision`. Reading a single projection is typed by
+PHPStan itself through the generic of the projection. Reading several projections at once returns an array, and
+PHPStan alone only knows its values as `mixed`. The extension types each entry with the state of its projection:
+
+```php
+use Patchlevel\EventSourcing\Attribute\Handle;
+use Patchlevel\EventSourcing\DecisionModel\Decision;
+
+final class ChangeNameHandler
+{
+    #[Handle]
+    public function __invoke(ChangeName $command, Decision $decision): void
+    {
+        $state = $decision->read([
+            'exists' => new ProfileExists($command->profileId),
+            'name' => new ProfileName($command->profileId),
+        ]); // array{exists: bool, name: string}
+
+        if (!$state['exists']) {
+            throw new RuntimeException('Profile does not exist');
+        }
+
+        if ($state['name'] === $command->name) {
+            return;
+        }
+
+        $decision->append([new NameChanged($command->profileId, $command->name)]);
+    }
+}
+```
+The state type is taken from the generic of the projection, like `@extends BasicProjection<bool>`.
+If a projection does not declare it, the extension uses the return type of `initialState()` instead,
+so this projection is typed as `bool` as well:
+
+```php
+use Patchlevel\EventSourcing\Attribute\Apply;
+use Patchlevel\EventSourcing\Identifier\Uuid;
+use Patchlevel\EventSourcing\Projection\BasicProjection;
+
+final class ProfileExists extends BasicProjection
+{
+    public function __construct(
+        private readonly Uuid $profileId,
+    ) {
+    }
+
+    public function initialState(): bool
+    {
+        return false;
+    }
+
+    #[Apply]
+    public function applyProfileCreated(bool $state, ProfileCreated $event): bool
+    {
+        return true;
+    }
+
+    /** @return list<string> */
+    protected function tagFilter(): array
+    {
+        return ["profile:{$this->profileId->toString()}"];
+    }
+}
+```
+:::note
+The same applies to `ProjectionBuilder::build()`, which returns the states of the given projections without a decision.
+:::
+
 ## Configuration
 
 All rules are enabled by default. You can deactivate single rules in your `phpstan.neon`,
@@ -262,10 +332,11 @@ parameters:
 With the extension enabled, PHPStan understands your aggregates: it stops complaining about properties that are
 initialized through events, it reports properties that no apply method ever writes, it reports state that is written but
 never used for a decision, it fails the build when an apply method records an event, and it fails the build when
-aggregate state is written outside an apply method. You get accurate static analysis without writing a single
-annotation. You get accurate static analysis without writing a single annotation.
+aggregate state is written outside an apply method. For decisions, it knows the state of every projection you read.
+You get accurate static analysis without writing a single annotation.
 
 ## Learn more
 
 * [What the extension offers](introduction.md)
 * [How to build aggregates with patchlevel/event-sourcing](https://patchlevel.dev/docs/event-sourcing/latest)
+* [How to make decisions with the dynamic consistency boundary](https://patchlevel.dev/docs/event-sourcing/latest/dynamic-consistency-boundary)

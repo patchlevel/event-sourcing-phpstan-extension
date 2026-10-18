@@ -1,12 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			rawMessage: 'Method Patchlevel\EventSourcing\Aggregate\BasicChildAggregate::recordThat() records an event and is called from apply method applyNameChanged().'
-			identifier: patchlevel.noRecordThatWhenApplying
-			count: 1
-			path: tests/Invalid/PersonalInformation.php
-
-		-
 			rawMessage: 'Aggregate state property "count" should only be written in an #[Apply] method, but is written in "Patchlevel\EventSourcingPHPStanExtension\Tests\Invalid\Profile::otherWriteForms()".'
 			identifier: patchlevel.noStateWriteWhenNotApplying
 			count: 3
