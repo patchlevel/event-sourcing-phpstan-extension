@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Patchlevel\EventSourcingPHPStanExtension;
 
-use Patchlevel\EventSourcing\Aggregate\AggregateRoot;
-use Patchlevel\EventSourcing\Attribute\Apply;
+use Patchlevel\EventSourcingPHPStanExtension\Helper\EventSourcing;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
@@ -18,8 +17,6 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Parser\Parser;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ExtendedMethodReflection;
-use PHPStan\Reflection\FunctionReflection;
-use PHPStan\Reflection\MethodReflection;
 use PHPStan\Rules\RestrictedUsage\RestrictedMethodUsageExtension;
 use PHPStan\Rules\RestrictedUsage\RestrictedUsage;
 
@@ -46,7 +43,7 @@ final class DontRecordWhenApplyingExtension implements RestrictedMethodUsageExte
     ): RestrictedUsage|null {
         $declaringClass = $methodReflection->getDeclaringClass();
 
-        if (!$this->isAggregate($declaringClass)) {
+        if (!EventSourcing::isAggregate($declaringClass)) {
             return null;
         }
 
@@ -56,7 +53,7 @@ final class DontRecordWhenApplyingExtension implements RestrictedMethodUsageExte
             return null;
         }
 
-        if (!$this->isApplyMethod($function)) {
+        if (!EventSourcing::isApplyMethod($function)) {
             return null;
         }
 
@@ -75,22 +72,6 @@ final class DontRecordWhenApplyingExtension implements RestrictedMethodUsageExte
             ),
             identifier: 'patchlevel.noRecordThatWhenApplying',
         );
-    }
-
-    private function isAggregate(ClassReflection $classReflection): bool
-    {
-        return $classReflection->implementsInterface(AggregateRoot::class);
-    }
-
-    private function isApplyMethod(FunctionReflection|MethodReflection $function): bool
-    {
-        foreach ($function->getAttributes() as $attribute) {
-            if ($attribute->getName() === Apply::class) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /** @param array<string, true> $visited */

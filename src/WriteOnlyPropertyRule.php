@@ -4,26 +4,14 @@ declare(strict_types=1);
 
 namespace Patchlevel\EventSourcingPHPStanExtension;
 
-use Patchlevel\EventSourcing\Aggregate\AggregateRoot;
 use Patchlevel\EventSourcing\Attribute\Apply;
 use Patchlevel\EventSourcing\Attribute\Id;
+use Patchlevel\EventSourcingPHPStanExtension\Helper\EventSourcing;
+use Patchlevel\EventSourcingPHPStanExtension\Helper\PropertyWrites;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\ArrayDimFetch;
-use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Expr\AssignOp;
-use PhpParser\Node\Expr\AssignRef;
-use PhpParser\Node\Expr\List_;
-use PhpParser\Node\Expr\PostDec;
-use PhpParser\Node\Expr\PostInc;
-use PhpParser\Node\Expr\PreDec;
-use PhpParser\Node\Expr\PreInc;
 use PhpParser\Node\Expr\PropertyFetch;
-use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Property;
-use PhpParser\Node\Stmt\Unset_;
 use PhpParser\NodeFinder;
 use PHPStan\Analyser\Scope;
 use PHPStan\Node\InClassNode;
@@ -55,7 +43,7 @@ final class WriteOnlyPropertyRule implements Rule
     {
         $classReflection = $node->getClassReflection();
 
-        if (!$classReflection->implementsInterface(AggregateRoot::class)) {
+        if (!EventSourcing::isAggregate($classReflection)) {
             return [];
         }
 
@@ -69,12 +57,12 @@ final class WriteOnlyPropertyRule implements Rule
         $read = [];
 
         foreach ($classNode->getMethods() as $method) {
-            $writeTargets = $this->writeTargets($method);
+            $writeTargets = PropertyWrites::findTargets($method->stmts ?? []);
 
-            if ($this->isApplyMethod($method)) {
+            if (EventSourcing::hasAttribute($method, Apply::class)) {
                 foreach ($writeTargets as $writeTarget) {
-                    foreach ($this->basePropertyFetches($writeTarget) as $propertyFetch) {
-                        $propertyName = $this->ownPropertyName($propertyFetch);
+                    foreach (PropertyWrites::properties($writeTarget) as $property) {
+                        $propertyName = PropertyWrites::ownPropertyName($property);
 
                         if ($propertyName === null) {
                             continue;
@@ -97,7 +85,7 @@ final class WriteOnlyPropertyRule implements Rule
                 continue;
             }
 
-            if ($this->isLibraryReadProperty($property)) {
+            if (EventSourcing::hasAttribute($property, Id::class)) {
                 continue;
             }
 
@@ -127,70 +115,6 @@ final class WriteOnlyPropertyRule implements Rule
         return $errors;
     }
 
-    private function isApplyMethod(ClassMethod $method): bool
-    {
-        foreach ($method->attrGroups as $attrGroup) {
-            foreach ($attrGroup->attrs as $attr) {
-                if ($attr->name->toString() === Apply::class) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    private function isLibraryReadProperty(Property $property): bool
-    {
-        foreach ($property->attrGroups as $attrGroup) {
-            foreach ($attrGroup->attrs as $attr) {
-                if ($attr->name->toString() === Id::class) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Collects the expressions that are written to in the method: assignment
-     * targets, operands of increment and decrement, and unset() arguments.
-     *
-     * @return list<Expr>
-     */
-    private function writeTargets(ClassMethod $method): array
-    {
-        $targets = [];
-
-        /** @var list<Assign|AssignOp|AssignRef|PreInc|PreDec|PostInc|PostDec|Unset_> $writes */
-        $writes = $this->nodeFinder->find(
-            $method->stmts ?? [],
-            static fn (Node $node): bool => $node instanceof Assign
-                || $node instanceof AssignOp
-                || $node instanceof AssignRef
-                || $node instanceof PreInc
-                || $node instanceof PreDec
-                || $node instanceof PostInc
-                || $node instanceof PostDec
-                || $node instanceof Unset_,
-        );
-
-        foreach ($writes as $write) {
-            if ($write instanceof Unset_) {
-                foreach ($write->vars as $var) {
-                    $targets[] = $var;
-                }
-
-                continue;
-            }
-
-            $targets[] = $write->var;
-        }
-
-        return $targets;
-    }
-
     /**
      * Collects the names of all properties the method reads: every $this
      * property fetch that is not itself the target of a write.
@@ -204,8 +128,8 @@ final class WriteOnlyPropertyRule implements Rule
         $writeBaseIds = [];
 
         foreach ($writeTargets as $writeTarget) {
-            foreach ($this->basePropertyFetches($writeTarget) as $propertyFetch) {
-                $writeBaseIds[spl_object_id($propertyFetch)] = true;
+            foreach (PropertyWrites::properties($writeTarget) as $property) {
+                $writeBaseIds[spl_object_id($property)] = true;
             }
         }
 
@@ -218,7 +142,7 @@ final class WriteOnlyPropertyRule implements Rule
                 continue;
             }
 
-            $propertyName = $this->ownPropertyName($propertyFetch);
+            $propertyName = PropertyWrites::ownPropertyName($propertyFetch);
 
             if ($propertyName === null) {
                 continue;
@@ -228,48 +152,5 @@ final class WriteOnlyPropertyRule implements Rule
         }
 
         return $names;
-    }
-
-    /** @return list<PropertyFetch> */
-    private function basePropertyFetches(Expr $expr): array
-    {
-        while ($expr instanceof ArrayDimFetch) {
-            $expr = $expr->var;
-        }
-
-        if ($expr instanceof PropertyFetch) {
-            return [$expr];
-        }
-
-        if ($expr instanceof List_) {
-            $fetches = [];
-
-            foreach ($expr->items as $item) {
-                if ($item === null) {
-                    continue;
-                }
-
-                foreach ($this->basePropertyFetches($item->value) as $fetch) {
-                    $fetches[] = $fetch;
-                }
-            }
-
-            return $fetches;
-        }
-
-        return [];
-    }
-
-    private function ownPropertyName(PropertyFetch $propertyFetch): string|null
-    {
-        if (
-            !$propertyFetch->var instanceof Variable
-            || $propertyFetch->var->name !== 'this'
-            || !$propertyFetch->name instanceof Identifier
-        ) {
-            return null;
-        }
-
-        return $propertyFetch->name->toString();
     }
 }
