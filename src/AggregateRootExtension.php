@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Patchlevel\EventSourcingPHPStanExtension;
 
-use Patchlevel\EventSourcing\Aggregate\AggregateRoot;
+use Patchlevel\EventSourcingPHPStanExtension\Helper\EventSourcing;
 use PHPStan\Reflection\PropertyReflection;
 use PHPStan\Rules\Properties\ReadWritePropertiesExtension;
 
@@ -27,14 +27,6 @@ final class AggregateRootExtension implements ReadWritePropertiesExtension
 
     private function isAggregate(PropertyReflection $property): bool
     {
-        $interfaces = $property->getDeclaringClass()->getInterfaces();
-
-        foreach ($interfaces as $interface) {
-            if ($interface->getName() === AggregateRoot::class) {
-                return true;
-            }
-        }
-
-        return false;
+        return EventSourcing::isAggregate($property->getDeclaringClass());
     }
 }

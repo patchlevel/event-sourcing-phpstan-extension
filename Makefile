@@ -27,6 +27,16 @@ phpstan-baseline: vendor                                                        
 .PHONY: static
 static: phpstan cs                                              			 	## run static analyser
 
+.PHONY: phpunit
+phpunit: vendor                                                                 ## run phpunit tests
+	vendor/bin/phpunit
+
+.PHONY: test
+test: phpunit                                                                   ## run tests
+
+.PHONY: dev
+dev: static test                                                                ## run dev tools
+
 .PHONY: docs
 docs: docs-extract-php docs-php-lint docs-phpcs docs-inject-php
 

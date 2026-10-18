@@ -327,6 +327,9 @@ parameters:
         noRecordThatWhenApplying: false
         noStateWriteWhenNotApplying: false
 ```
+The [analyser](analyser.md) is the other way around. It is disabled by default and you enable it with
+`analyser: true`.
+
 ## Result
 
 With the extension enabled, PHPStan understands your aggregates: it stops complaining about properties that are
@@ -338,5 +341,6 @@ You get accurate static analysis without writing a single annotation.
 ## Learn more
 
 * [What the extension offers](introduction.md)
+* [How to visualize your domain with the analyser](analyser.md)
 * [How to build aggregates with patchlevel/event-sourcing](https://patchlevel.dev/docs/event-sourcing/latest)
 * [How to make decisions with the dynamic consistency boundary](https://patchlevel.dev/docs/event-sourcing/latest/dynamic-consistency-boundary)

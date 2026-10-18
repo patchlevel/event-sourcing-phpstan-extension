@@ -1,0 +1,8 @@
+includes:
+	- ../../extension.neon
+
+parameters:
+	level: 0
+	paths:
+		- Fixture
+	tmpDir: ../../var/phpstan-analyser-disabled

@@ -8,4 +8,5 @@ parameters:
     level: max
     checkUninitializedProperties: true
     paths:
+        - src/
         - tests/

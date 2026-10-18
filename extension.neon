@@ -5,6 +5,7 @@ parameters:
 		writeOnlyProperty: true
 		noRecordThatWhenApplying: true
 		noStateWriteWhenNotApplying: true
+		analyser: false
 
 parametersSchema:
 	patchlevelEventSourcing: structure([
@@ -13,6 +14,7 @@ parametersSchema:
 		writeOnlyProperty: bool()
 		noRecordThatWhenApplying: bool()
 		noStateWriteWhenNotApplying: bool()
+		analyser: bool()
 	])
 
 conditionalTags:
@@ -26,6 +28,20 @@ conditionalTags:
 		phpstan.restrictedMethodUsageExtension: %patchlevelEventSourcing.noRecordThatWhenApplying%
 	Patchlevel\EventSourcingPHPStanExtension\DontWriteStateWhenNotApplyingRule:
 		phpstan.rules.rule: %patchlevelEventSourcing.noStateWriteWhenNotApplying%
+	Patchlevel\EventSourcingPHPStanExtension\Analyser\Collector\AggregateCollector:
+		phpstan.collector: %patchlevelEventSourcing.analyser%
+	Patchlevel\EventSourcingPHPStanExtension\Analyser\Collector\EventCollector:
+		phpstan.collector: %patchlevelEventSourcing.analyser%
+	Patchlevel\EventSourcingPHPStanExtension\Analyser\Collector\SubscriberCollector:
+		phpstan.collector: %patchlevelEventSourcing.analyser%
+	Patchlevel\EventSourcingPHPStanExtension\Analyser\Collector\ProjectionCollector:
+		phpstan.collector: %patchlevelEventSourcing.analyser%
+	Patchlevel\EventSourcingPHPStanExtension\Analyser\Collector\HandlerCollector:
+		phpstan.collector: %patchlevelEventSourcing.analyser%
+	Patchlevel\EventSourcingPHPStanExtension\Analyser\Collector\ControllerCollector:
+		phpstan.collector: %patchlevelEventSourcing.analyser%
+	Patchlevel\EventSourcingPHPStanExtension\Analyser\Collector\CallCollector:
+		phpstan.collector: %patchlevelEventSourcing.analyser%
 
 services:
 	-
@@ -41,8 +57,6 @@ services:
 		class: Patchlevel\EventSourcingPHPStanExtension\DontRecordWhenApplyingExtension
 		arguments:
 			parser: @defaultAnalysisParser
-		tags:
-			- phpstan.restrictedMethodUsageExtension
 
 	-
 		class: Patchlevel\EventSourcingPHPStanExtension\DontWriteStateWhenNotApplyingRule
@@ -56,3 +70,36 @@ services:
 		class: Patchlevel\EventSourcingPHPStanExtension\ProjectionBuilderExtension
 		tags:
 			- phpstan.broker.dynamicMethodReturnTypeExtension
+
+	-
+		class: Patchlevel\EventSourcingPHPStanExtension\Analyser\Collector\AggregateCollector
+
+	-
+		class: Patchlevel\EventSourcingPHPStanExtension\Analyser\Collector\EventCollector
+
+	-
+		class: Patchlevel\EventSourcingPHPStanExtension\Analyser\Collector\SubscriberCollector
+
+	-
+		class: Patchlevel\EventSourcingPHPStanExtension\Analyser\Collector\ProjectionCollector
+
+	-
+		class: Patchlevel\EventSourcingPHPStanExtension\Analyser\Collector\HandlerCollector
+
+	-
+		class: Patchlevel\EventSourcingPHPStanExtension\Analyser\Collector\ControllerCollector
+
+	-
+		class: Patchlevel\EventSourcingPHPStanExtension\Analyser\Collector\CallCollector
+
+	errorFormatter.eventSourcingJson:
+		class: Patchlevel\EventSourcingPHPStanExtension\Analyser\JsonFormatter
+		arguments:
+			enabled: %patchlevelEventSourcing.analyser%
+			fallbackFormatter: @errorFormatter.table
+
+	errorFormatter.eventSourcingGraphviz:
+		class: Patchlevel\EventSourcingPHPStanExtension\Analyser\GraphvizFormatter
+		arguments:
+			enabled: %patchlevelEventSourcing.analyser%
+			fallbackFormatter: @errorFormatter.table
