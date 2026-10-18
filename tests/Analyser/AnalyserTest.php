@@ -12,12 +12,15 @@ use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
 use function dirname;
-use function escapeshellarg;
-use function exec;
+use function fclose;
 use function file_put_contents;
 use function getenv;
 use function implode;
+use function proc_close;
+use function proc_open;
 use function sprintf;
+use function stream_get_contents;
+use function tmpfile;
 
 use const PHP_BINARY;
 
@@ -42,42 +45,59 @@ final class AnalyserTest extends TestCase
 
     public function testDisabledAnalyser(): void
     {
-        [$exitCode, $output] = self::analyse('eventSourcingJson', __DIR__ . '/disabled.neon');
+        [$exitCode, $output, $errorOutput] = self::analyse('eventSourcingJson', __DIR__ . '/disabled.neon');
 
-        self::assertSame(1, $exitCode);
+        self::assertSame(1, $exitCode, $errorOutput);
         self::assertStringContainsString('The analyser is disabled.', $output);
     }
 
     private function assertSnapshot(string $errorFormat, string $snapshot): void
     {
-        [$exitCode, $output] = self::analyse($errorFormat, __DIR__ . '/analyser.neon');
+        [$exitCode, $output, $errorOutput] = self::analyse($errorFormat, __DIR__ . '/analyser.neon');
 
         if (getenv('UPDATE_SNAPSHOTS') === '1') {
             file_put_contents($snapshot, $output);
         }
 
-        self::assertSame(0, $exitCode, $output);
-        self::assertStringEqualsFile($snapshot, $output);
+        self::assertSame(0, $exitCode, $output . $errorOutput);
+        self::assertStringEqualsFile($snapshot, $output, $errorOutput);
     }
 
-    /** @return array{int, string} */
+    /**
+     * Only the standard output is compared, the error output may contain warnings of the PHP setup.
+     *
+     * @return array{int, string, string}
+     */
     private static function analyse(string $errorFormat, string $config): array
     {
-        $command = sprintf(
-            '%s %s analyse --no-progress --configuration=%s --error-format=%s',
-            escapeshellarg(PHP_BINARY),
-            escapeshellarg(dirname(__DIR__, 2) . '/vendor/bin/phpstan'),
-            escapeshellarg($config),
-            escapeshellarg($errorFormat),
-        );
+        $command = [
+            PHP_BINARY,
+            dirname(__DIR__, 2) . '/vendor/bin/phpstan',
+            'analyse',
+            '--no-progress',
+            '--configuration=' . $config,
+            '--error-format=' . $errorFormat,
+        ];
 
-        $output = [];
-        $exitCode = 0;
+        $errorStream = tmpfile();
 
-        if (exec($command . ' 2>&1', $output, $exitCode) === false) {
-            throw new RuntimeException(sprintf('Could not run "%s".', $command));
+        if ($errorStream === false) {
+            throw new RuntimeException('Could not create a temporary file for the error output.');
         }
 
-        return [$exitCode, implode("\n", $output) . "\n"];
+        $process = proc_open($command, [1 => ['pipe', 'w'], 2 => $errorStream], $pipes);
+
+        if ($process === false) {
+            throw new RuntimeException(sprintf('Could not run "%s".', implode(' ', $command)));
+        }
+
+        $output = (string)stream_get_contents($pipes[1]);
+        fclose($pipes[1]);
+        $exitCode = proc_close($process);
+
+        $errorOutput = (string)stream_get_contents($errorStream, offset: 0);
+        fclose($errorStream);
+
+        return [$exitCode, $output, $errorOutput];
     }
 }
