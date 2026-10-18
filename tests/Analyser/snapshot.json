@@ -1,0 +1,183 @@
+{
+    "boundedContexts": {
+        "Billing": {
+            "name": "Billing",
+            "aggregates": [],
+            "events": [
+                "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Billing\\Domain\\InvoiceCreated"
+            ],
+            "commands": [
+                "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Billing\\Application\\CreateInvoice"
+            ],
+            "subscribers": [
+                "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Billing\\Infrastructure\\FirstInvoiceProcessor"
+            ],
+            "projections": [
+                "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Billing\\Domain\\CustomerInvoicesProjection",
+                "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Billing\\Domain\\NextInvoiceNumberProjection"
+            ],
+            "userInterfaces": []
+        },
+        "Profile": {
+            "name": "Profile",
+            "aggregates": [
+                "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Domain\\Profile"
+            ],
+            "events": [
+                "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Domain\\ProfileArchived",
+                "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Domain\\ProfileCreated",
+                "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Domain\\ProfileRenamed"
+            ],
+            "commands": [
+                "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Application\\ArchiveProfile",
+                "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Application\\CreateProfile",
+                "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Application\\RenameProfile"
+            ],
+            "subscribers": [
+                "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Infrastructure\\ProfileProjector"
+            ],
+            "projections": [],
+            "userInterfaces": [
+                "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Infrastructure\\CreateProfileController",
+                "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Infrastructure\\ProfileListController"
+            ]
+        }
+    },
+    "aggregates": {
+        "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Domain\\Profile": {
+            "name": "profile",
+            "class": "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Domain\\Profile",
+            "events": [
+                "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Domain\\ProfileArchived",
+                "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Domain\\ProfileCreated",
+                "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Domain\\ProfileRenamed"
+            ],
+            "commands": [
+                "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Application\\ArchiveProfile",
+                "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Application\\CreateProfile",
+                "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Application\\RenameProfile"
+            ]
+        }
+    },
+    "events": {
+        "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Billing\\Domain\\InvoiceCreated": {
+            "name": "invoice.created",
+            "class": "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Billing\\Domain\\InvoiceCreated"
+        },
+        "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Domain\\ProfileArchived": {
+            "name": "profile.archived",
+            "class": "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Domain\\ProfileArchived"
+        },
+        "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Domain\\ProfileCreated": {
+            "name": "profile.created",
+            "class": "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Domain\\ProfileCreated"
+        },
+        "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Domain\\ProfileRenamed": {
+            "name": "profile.renamed",
+            "class": "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Domain\\ProfileRenamed"
+        }
+    },
+    "commands": {
+        "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Billing\\Application\\CreateInvoice": {
+            "name": "CreateInvoice",
+            "class": "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Billing\\Application\\CreateInvoice",
+            "events": [
+                "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Billing\\Domain\\InvoiceCreated"
+            ],
+            "projections": [
+                "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Billing\\Domain\\CustomerInvoicesProjection",
+                "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Billing\\Domain\\NextInvoiceNumberProjection"
+            ]
+        },
+        "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Application\\ArchiveProfile": {
+            "name": "ArchiveProfile",
+            "class": "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Application\\ArchiveProfile",
+            "events": [
+                "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Domain\\ProfileArchived"
+            ],
+            "projections": []
+        },
+        "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Application\\CreateProfile": {
+            "name": "CreateProfile",
+            "class": "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Application\\CreateProfile",
+            "events": [
+                "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Domain\\ProfileCreated"
+            ],
+            "projections": []
+        },
+        "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Application\\RenameProfile": {
+            "name": "RenameProfile",
+            "class": "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Application\\RenameProfile",
+            "events": [
+                "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Domain\\ProfileRenamed"
+            ],
+            "projections": []
+        }
+    },
+    "subscribers": {
+        "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Audit\\AuditSubscriber": {
+            "name": "audit",
+            "class": "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Audit\\AuditSubscriber",
+            "type": "subscriber",
+            "events": [
+                "*"
+            ],
+            "commands": []
+        },
+        "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Billing\\Infrastructure\\FirstInvoiceProcessor": {
+            "name": "first_invoice",
+            "class": "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Billing\\Infrastructure\\FirstInvoiceProcessor",
+            "type": "processor",
+            "events": [
+                "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Domain\\ProfileCreated"
+            ],
+            "commands": [
+                "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Billing\\Application\\CreateInvoice"
+            ]
+        },
+        "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Infrastructure\\ProfileProjector": {
+            "name": "profile",
+            "class": "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Infrastructure\\ProfileProjector",
+            "type": "projector",
+            "events": [
+                "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Domain\\ProfileCreated",
+                "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Domain\\ProfileRenamed"
+            ],
+            "commands": []
+        }
+    },
+    "projections": {
+        "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Billing\\Domain\\CustomerInvoicesProjection": {
+            "name": "CustomerInvoicesProjection",
+            "class": "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Billing\\Domain\\CustomerInvoicesProjection",
+            "events": [
+                "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Billing\\Domain\\InvoiceCreated"
+            ]
+        },
+        "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Billing\\Domain\\NextInvoiceNumberProjection": {
+            "name": "NextInvoiceNumberProjection",
+            "class": "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Billing\\Domain\\NextInvoiceNumberProjection",
+            "events": [
+                "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Billing\\Domain\\InvoiceCreated"
+            ]
+        }
+    },
+    "userInterfaces": {
+        "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Infrastructure\\CreateProfileController": {
+            "name": "CreateProfileController",
+            "class": "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Infrastructure\\CreateProfileController",
+            "commands": [
+                "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Application\\CreateProfile"
+            ],
+            "subscribers": []
+        },
+        "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Infrastructure\\ProfileListController": {
+            "name": "ProfileListController",
+            "class": "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Infrastructure\\ProfileListController",
+            "commands": [],
+            "subscribers": [
+                "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Infrastructure\\ProfileProjector"
+            ]
+        }
+    }
+}

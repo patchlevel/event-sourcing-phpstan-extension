@@ -1,0 +1,51 @@
+digraph "G" {
+    rankdir="LR";
+    nodesep="0.5";
+    ranksep="1";
+    fontcolor="#343a40";
+    node [shape="Mrecord", style="filled", width="3", height="1", fixedsize="true", fontcolor="#343a40"];
+    edge [color="#343a40"];
+    subgraph "cluster_context_Billing" {
+        label="Billing";
+        style="dotted";
+        "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Billing\\Domain\\InvoiceCreated" [label="invoice.created", color="#ffc078"];
+        "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Billing\\Application\\CreateInvoice" [label="CreateInvoice", color="#74c0fc"];
+        "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Billing\\Infrastructure\\FirstInvoiceProcessor" [label="first_invoice", color="#e599f7"];
+        "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Billing\\Domain\\CustomerInvoicesProjection" [label="CustomerInvoicesProjection", color="#d8f5a2"];
+        "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Billing\\Domain\\NextInvoiceNumberProjection" [label="NextInvoiceNumberProjection", color="#d8f5a2"];
+    }
+    subgraph "cluster_context_Profile" {
+        label="Profile";
+        style="dotted";
+        subgraph "cluster_aggregate_Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Domain\\Profile" {
+            label="profile";
+            style="filled";
+            color="#ffec99";
+            penwidth="0";
+            "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Application\\ArchiveProfile" [label="ArchiveProfile", color="#74c0fc"];
+            "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Application\\CreateProfile" [label="CreateProfile", color="#74c0fc"];
+            "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Application\\RenameProfile" [label="RenameProfile", color="#74c0fc"];
+            "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Domain\\ProfileArchived" [label="profile.archived", color="#ffc078"];
+            "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Domain\\ProfileCreated" [label="profile.created", color="#ffc078"];
+            "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Domain\\ProfileRenamed" [label="profile.renamed", color="#ffc078"];
+        }
+        "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Infrastructure\\ProfileProjector" [label="profile", color="#8ce99a"];
+        "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Infrastructure\\CreateProfileController" [label="CreateProfileController", color="#dee2e6"];
+        "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Infrastructure\\ProfileListController" [label="ProfileListController", color="#dee2e6"];
+    }
+    "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Audit\\AuditSubscriber" [label="audit\n(all events)", color="#ffa8a8"];
+    "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Billing\\Application\\CreateInvoice" -> "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Billing\\Domain\\InvoiceCreated";
+    "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Application\\ArchiveProfile" -> "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Domain\\ProfileArchived";
+    "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Application\\CreateProfile" -> "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Domain\\ProfileCreated";
+    "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Application\\RenameProfile" -> "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Domain\\ProfileRenamed";
+    "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Billing\\Domain\\InvoiceCreated" -> "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Billing\\Domain\\CustomerInvoicesProjection";
+    "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Billing\\Domain\\InvoiceCreated" -> "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Billing\\Domain\\NextInvoiceNumberProjection";
+    "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Billing\\Domain\\CustomerInvoicesProjection" -> "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Billing\\Application\\CreateInvoice";
+    "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Billing\\Domain\\NextInvoiceNumberProjection" -> "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Billing\\Application\\CreateInvoice";
+    "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Domain\\ProfileCreated" -> "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Billing\\Infrastructure\\FirstInvoiceProcessor";
+    "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Billing\\Infrastructure\\FirstInvoiceProcessor" -> "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Billing\\Application\\CreateInvoice";
+    "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Domain\\ProfileCreated" -> "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Infrastructure\\ProfileProjector";
+    "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Domain\\ProfileRenamed" -> "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Infrastructure\\ProfileProjector";
+    "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Infrastructure\\CreateProfileController" -> "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Application\\CreateProfile";
+    "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Infrastructure\\ProfileProjector" -> "Patchlevel\\EventSourcingPHPStanExtension\\Tests\\Analyser\\Fixture\\Profile\\Infrastructure\\ProfileListController";
+}

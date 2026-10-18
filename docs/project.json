@@ -1,6 +1,8 @@
 {
   "navigation": [
     { "title": "Introduction", "file": "introduction.md" },
-    { "title": "Getting Started", "file": "getting-started.md" }
+    { "title": "Getting Started", "file": "getting-started.md" },
+    { "title": "Analyser", "file": "analyser.md" },
+    { "title": "Analyser Output", "file": "analyser-output.md" }
   ]
 }

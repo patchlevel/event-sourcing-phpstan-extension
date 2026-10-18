@@ -12,6 +12,7 @@ and it catches common mistakes before they ever reach runtime.
 * [Recording in apply methods](getting-started.md#recording-in-apply-methods) is reported as an error, because recording events while replaying them leads to duplicated events.
 * [Writing state outside apply methods](getting-started.md#writing-state-outside-apply-methods) is reported as an error, because state that is not derived from an event is lost when the aggregate is reloaded.
 * [Typed decisions](getting-started.md#typed-decisions) for the dynamic consistency boundary, so PHPStan knows the state of every projection a decision reads, also when several are read at once.
+* [Analyser](analyser.md) that turns your aggregates, commands, events, decisions and subscribers into a diagram inspired by Event Storming or into JSON for your own tooling.
 
 ## Installation
 
@@ -26,6 +27,7 @@ includes:
 ```
 That is all the configuration the extension needs. All checks are active as soon as the extension is registered,
 and single rules can be deactivated through the [configuration parameters](getting-started.md#configuration).
+The [analyser](analyser.md) is the only feature you enable explicitly.
 
 ## Integration
 

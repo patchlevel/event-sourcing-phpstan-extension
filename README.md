@@ -13,6 +13,7 @@
 * [Recording in apply methods](https://patchlevel.dev/docs/event-sourcing-phpstan-extension/latest/getting-started#recording-in-apply-methods) is reported as an error, because recording events while replaying them leads to duplicated events.
 * [Writing state outside apply methods](https://patchlevel.dev/docs/event-sourcing-phpstan-extension/latest/getting-started#writing-state-outside-apply-methods) is reported as an error, because state that is not derived from an event is lost when the aggregate is reloaded.
 * [Typed decisions](https://patchlevel.dev/docs/event-sourcing-phpstan-extension/latest/getting-started#typed-decisions) for the dynamic consistency boundary, so PHPStan knows the state of every projection a decision reads, also when several are read at once.
+* [Analyser](https://patchlevel.dev/docs/event-sourcing-phpstan-extension/latest/analyser) that turns your aggregates, commands, events, decisions and subscribers into a diagram inspired by Event Storming or into JSON for your own tooling.
 
 ## Installation
 
